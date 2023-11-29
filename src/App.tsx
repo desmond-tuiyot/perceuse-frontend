@@ -1,8 +1,11 @@
-function App() {
+import { Link } from "react-router-dom"
+
+const App: React.FC = () => {
   return (
-    <>
-      Perceuse
-    </>
+    <div>
+      <h1>Perceuse</h1>
+      <Link to='/dance-move'>Check Out Dance Moves</Link>
+    </div>
   )
 }
 
