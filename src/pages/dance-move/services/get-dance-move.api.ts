@@ -10,11 +10,12 @@ interface DanceMoveQueryResult {
  * @returns an object with data, loading, and error properties
  */
 const useGetDanceMoves = () => {
-  const { data, loading, error } = useQuery<DanceMoveQueryResult>(GET_DANCE_MOVES)
+  const { data, loading, error, refetch } = useQuery<DanceMoveQueryResult>(GET_DANCE_MOVES)
   return {
     data,
     loading,
-    error
+    error,
+    refetch
   }
 }
 
