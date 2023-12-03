@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, ApolloProvider as ApolloProviderActual } from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: 'https://perceuse-api-dev-08218182df5d.herokuapp.com/graphql',
+  uri: import.meta.env.VITE_API_URL as string || 'http://localhost:4000/graphql',
   cache: new InMemoryCache()
 })
 
