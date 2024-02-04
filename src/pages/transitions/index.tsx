@@ -1,4 +1,5 @@
 import React from 'react'
+import { Divider } from 'antd'
 
 import AddTransitions from './features/add-transitions'
 import ShowTransitions from './features/show-transitions'
@@ -14,6 +15,7 @@ const Transitions: React.FC = () => {
       <div className={styles.transitionsList}>
         <ShowTransitions />
       </div>
+      <Divider />
       <div>
         <AddTransitions />
       </div>

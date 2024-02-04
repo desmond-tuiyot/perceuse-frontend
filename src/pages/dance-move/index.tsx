@@ -1,3 +1,6 @@
+import React from 'react'
+import { Divider } from 'antd'
+
 import DanceMovesView from './features/show-dance-moves'
 import AddDanceMove from './features/add-dance-move'
 
@@ -12,6 +15,7 @@ const DanceMove: React.FC = () => {
       <div className={styles.movesList}>
         <DanceMovesView />
       </div>
+      <Divider />
       <div>
         <AddDanceMove />
       </div>
