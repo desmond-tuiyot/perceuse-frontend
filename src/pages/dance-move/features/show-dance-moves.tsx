@@ -1,4 +1,3 @@
-import { useApolloClient } from '@apollo/client'
 import { Button, List } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 
@@ -10,13 +9,12 @@ import styles from './show-dance-moves.module.css'
  * Renders the list of dance moves
  */
 const DanceMovesView: React.FC = () => {
-  const { data, loading, error } = useGetDanceMoves()
+  const { data, loading, error, refetch } = useGetDanceMoves()
   const removeDanceMove = useRemoveDanceMove()
-  const client = useApolloClient()
 
   const handleDelete = async (id: number) => {
     await removeDanceMove.call(id)
-    await client.refetchQueries({ include: ['getDanceMoves'] })
+    await refetch()
   }
 
   if (loading) return <p>Loading...</p>
