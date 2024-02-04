@@ -27,7 +27,8 @@ const AddTransitions: React.FC = () => {
       danceMove1Id: values.danceMove1,
       danceMove2Id: values.danceMove2
     })
-    transitionsHook.refetch()
+    await transitionsHook.refetch()
+    form.resetFields()
   }
 
   const filterOption = (input: string, option?: DanceMoveItem) =>
