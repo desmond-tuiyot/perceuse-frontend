@@ -1,0 +1,7 @@
+.container {
+  composes: container from '../dance-move/dance-move.module.css';
+}
+
+.transitionsList {
+  composes: movesList from '../dance-move/dance-move.module.css';
+}
