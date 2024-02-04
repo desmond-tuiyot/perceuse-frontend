@@ -1,7 +1,10 @@
-import { useState } from "react"
+import { useState } from 'react'
+import { Button, Form, Input } from 'antd'
 
-import useAddDanceMove from "../services/add-dance-move.api"
-import useGetDanceMoves from "../services/get-dance-move.api"
+import useAddDanceMove from '../services/add-dance-move.api'
+import useGetDanceMoves from '../services/get-dance-move.api'
+
+import styles from './add-dance-move.module.css'
 
 const AddDanceMove: React.FC = () => {
   const [moveName, setMoveName] = useState('') 
@@ -21,20 +24,33 @@ const AddDanceMove: React.FC = () => {
         name: moveName
       }
      })
-     await refetch()
+    setMoveName('')
+    await refetch()
+  }
+
+  const handleEnter = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      await call({ 
+        data: {
+          name: moveName
+        }
+       })
+      setMoveName('')
+      await refetch()
+    }
   }
 
   return (
-    <div>
-      <h1>Add Dance Move</h1>
-      <form>
-        <label htmlFor='name'>Name</label>
-        <input type='text' name='name' id='name' onChange={handleChange} value={moveName} />
-        <button type='submit' onClick={handleSubmit}>
+    <Form layout='vertical'>
+      <Form.Item>
+        <Input type='text' name='name' id='name' onKeyUp={handleEnter} onChange={handleChange} value={moveName} />
+      </Form.Item>
+      <Form.Item>
+        <Button size='large' type='primary' className={styles.submitButton} loading={loading} onClick={handleSubmit}>
           {loading ? 'Adding dance move...' : 'Add Dance Move'}
-        </button>
-      </form>
-    </div>
+        </Button>
+      </Form.Item>
+    </Form>
   )
 }
 
