@@ -5,7 +5,13 @@ import DanceMove from '../pages/dance-move'
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />
+    element: <App />,
+    children: [
+      {
+        path: '/',
+        element: <DanceMove />
+      }
+    ]
   },
   {
     path: '/dance-move',
