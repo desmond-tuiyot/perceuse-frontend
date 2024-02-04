@@ -1,0 +1,3 @@
+.submitButton {
+  composes: submitButton from '../../dance-move/features/add-dance-move.module.css';
+}

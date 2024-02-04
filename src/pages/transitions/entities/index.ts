@@ -16,3 +16,8 @@ export interface DanceSelectFieldType {
   danceMove1: number
   danceMove2: number
 }
+
+export interface DanceMoveItem {
+  value: number
+  label: string
+}

@@ -1,10 +1,12 @@
 import React from 'react'
 import { Select, Button, Form } from 'antd'
 
-import { DanceSelectFieldType } from '../entities'
+import { DanceMoveItem, DanceSelectFieldType } from '../entities'
 import useAddTransition from '../services/add-transition.api'
 import useGetTransitions from '../services/get-transitions.api'
 import useGetDanceSelectItems from '../services/get-dance-select-items'
+
+import styles from './add-transitions.module.css'
 
 /**
  * Renders a form to add a transition between two dance moves
@@ -28,17 +30,20 @@ const AddTransitions: React.FC = () => {
     transitionsHook.refetch()
   }
 
+  const filterOption = (input: string, option?: DanceMoveItem) =>
+    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+
   return (
-    <div>
+    <div className={styles.container}>
       <Form form={form} onFinish={handleFinish}>
         <Form.Item<DanceSelectFieldType> name='danceMove1' label='Dance Move 1'>
-          <Select options={itemsList1} />
+          <Select showSearch filterOption={filterOption} options={itemsList1} />
         </Form.Item>
         <Form.Item<DanceSelectFieldType> name='danceMove2'  label='Dance Move 2'>
-          <Select options={itemsList2} />
+          <Select showSearch filterOption={filterOption} options={itemsList2} />
         </Form.Item>
         <Form.Item>
-          <Button htmlType='submit' loading={addTransition.loading} type='primary'>
+          <Button htmlType='submit' size='large' className={styles.submitButton} loading={addTransition.loading} type='primary'>
             Add Transition
           </Button>
         </Form.Item>
