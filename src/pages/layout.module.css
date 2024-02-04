@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+.graphView {
+  flex: 1;
+  padding: 24px;
+}
+
+.sideBar {
+  width: 400px;
+  padding: 24px;
+  border-right: 1px solid #ccc;
+}
