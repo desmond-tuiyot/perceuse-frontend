@@ -1,14 +1,9 @@
 import { Form, FormInstance } from 'antd'
 
-import { DanceSelectFieldType } from '../entities'
+import { DanceSelectFieldType, DanceMoveItem } from '../entities'
 import useGetDanceMoves from '../../dance-move/services/get-dance-move.api'
 import useGetTransitions from './get-transitions.api'
 import { DanceMove } from '../../dance-move/entities'
-
-interface DanceMoveItem {
-  value: number
-  label: string
-}
 
 interface GetDanceSelectItemsParams {
   form: FormInstance<DanceSelectFieldType>
