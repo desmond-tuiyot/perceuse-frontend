@@ -1,4 +1,4 @@
 export interface DanceMove {
-  id: string
+  id: number
   name: string
 }

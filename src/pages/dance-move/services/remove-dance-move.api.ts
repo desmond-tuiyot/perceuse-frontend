@@ -2,26 +2,30 @@ import { ApolloError, gql, useMutation, FetchResult } from '@apollo/client'
 
 interface RemoveDanceMoveParams {
   where: {
-    id: string
+    id: number
   }
 }
 
 interface RemoveDanceMoveResult {
   deleteOneDanceMove: {
-    id: string
+    id: number
   }
 }
 
 interface RemoveDanceMoveHookReturnValue {
-  call: (id: string) => Promise<FetchResult<RemoveDanceMoveResult>>
+  call: (id: number) => Promise<FetchResult<RemoveDanceMoveResult>>
   loading: boolean
   error: ApolloError | undefined
 }
 
+/**
+ * A custom hook that runs a mutation to remove a dance move
+ * @returns a function to run the mutation, as well as `loading` and `error` states
+ */
 const useRemoveDanceMove = (): RemoveDanceMoveHookReturnValue => {
   const [removeDanceMove, { loading, error }] = useMutation<RemoveDanceMoveResult, RemoveDanceMoveParams>(REMOVE_DANCE_MOVE)
 
-  const call = async (id: string): Promise<FetchResult<RemoveDanceMoveResult>> => {
+  const call = async (id: number): Promise<FetchResult<RemoveDanceMoveResult>> => {
     return await removeDanceMove({ variables: {
       where: { id }
     }})

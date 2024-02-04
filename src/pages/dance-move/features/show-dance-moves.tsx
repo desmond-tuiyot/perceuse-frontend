@@ -6,12 +6,15 @@ import useGetDanceMoves from '../services/get-dance-move.api'
 import useRemoveDanceMove from '../services/remove-dance-move.api'
 import styles from './show-dance-moves.module.css'
 
+/**
+ * Renders the list of dance moves
+ */
 const DanceMovesView: React.FC = () => {
   const { data, loading, error } = useGetDanceMoves()
   const removeDanceMove = useRemoveDanceMove()
   const client = useApolloClient()
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     await removeDanceMove.call(id)
     await client.refetchQueries({ include: ['getDanceMoves'] })
   }
