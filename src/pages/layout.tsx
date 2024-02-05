@@ -12,7 +12,7 @@ const Layout: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.sideBar}><Outlet /></div>
-      <div className={styles.container}><GraphView /></div>
+      <div className={styles.graphView}><GraphView /></div>
     </div>
   )
 }
