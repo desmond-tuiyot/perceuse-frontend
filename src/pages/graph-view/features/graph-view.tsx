@@ -12,9 +12,13 @@ const GraphView: React.FC = () => {
   const transitions = useGetTransitions()?.data?.transitions || []
   const danceMoves = useGetDanceMoves()?.data?.danceMoves || []
 
+  if (!transitions.length || !danceMoves.length) return <p>Loading...</p>
+  if (transitions.length === 0) return <p>No transitions found</p>
+  if (danceMoves.length === 0) return <p>No dance moves found</p>
+
   const graphData = getGraphData(danceMoves, transitions)
   return (
-    <NetworkDiagram width={600} height={600} data={graphData} />
+    <NetworkDiagram width={1000} height={1000} data={graphData} />
   )
 }
 
