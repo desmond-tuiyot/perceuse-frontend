@@ -1,16 +1,6 @@
 import { DanceMove } from '../../dance-move/entities' 
 import { Transition } from '../../transitions/entities'
-
-export interface GraphNode extends d3.SimulationNodeDatum {
-  id: number
-  label: string
-}
-
-export interface GraphLink extends d3.SimulationLinkDatum<GraphNode> {
-  source: number
-  target: number
-  value: number
-}
+import { GraphLink, GraphNode } from '.'
 
 export interface GraphData {
   nodes: GraphNode[]

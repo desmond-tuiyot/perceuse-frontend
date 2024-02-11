@@ -1,7 +1,9 @@
 import React from 'react'
 
 import useDrawNetwork from '../services/use-draw-network'
-import { GraphData, GraphLink, GraphNode } from '../entities/get-graph-data'
+import usePanAndZoom from '../services/use-pan-and-zoom'
+import { GraphData } from '../entities/get-graph-data'
+import { GraphLink, GraphNode } from '../entities'
 
 interface NetworkDiagramProps {
   width: number
@@ -17,15 +19,20 @@ interface NetworkDiagramProps {
  */
 const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ width, height, data }) => {
   const { nodes, links } = useDrawNetwork({ width, height, data })
+  const { transform, transformedElementParentRef } = usePanAndZoom<SVGSVGElement>()  
+  
   return (
     <svg
+      ref={transformedElementParentRef}
       style={{ maxWidth: '100%', width, height: 'auto' }}
       width={width}
       height={height}
       viewBox={`0, 0, ${width}, ${height}`}
     >
-      <NetworkLinks links={links} />
-      <NetworkNodes nodes={nodes} />
+      <g transform={transform}>
+        <NetworkLinks links={links} />
+        <NetworkNodes nodes={nodes} />
+      </g>
     </svg>
   )
 }
@@ -54,7 +61,6 @@ const NetworkNodes: React.FC<NetworkNodesProps> = ({ nodes }) => {
 /**
  * Renders the label for a node in the network diagram
  * @prop `node` - node data - contains label and position
- * @returns 
  */
 const NodeLabel: React.FC<{ node: GraphNode }> = ({ node }) => {
   return (
@@ -76,6 +82,10 @@ interface NetworkNodeProps {
   node: GraphNode
 }
 
+/**
+ * Renders a single node in the network diagram
+ * @prop `node` - node data
+ */
 const NetworkNode: React.FC<NetworkNodeProps> = ({ node }) => {
   return (
     <circle
