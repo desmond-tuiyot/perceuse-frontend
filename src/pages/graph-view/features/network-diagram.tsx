@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 
 import useDrawNetwork from '../services/use-draw-network'
 import { GraphData, GraphLink, GraphNode } from '../entities/get-graph-data'
@@ -16,18 +16,16 @@ interface NetworkDiagramProps {
  * @prop `data` - graph data to be rendered - contains nodes and links
  */
 const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ width, height, data }) => {
-  const svgRef = useRef<SVGSVGElement>(null)
   const { nodes, links } = useDrawNetwork({ width, height, data })
   return (
     <svg
-      ref={svgRef}
       style={{ maxWidth: '100%', width, height: 'auto' }}
       width={width}
       height={height}
       viewBox={`0, 0, ${width}, ${height}`}
     >
-      <NetworkNodes nodes={nodes} />
       <NetworkLinks links={links} />
+      <NetworkNodes nodes={nodes} />
     </svg>
   )
 }
@@ -42,17 +40,51 @@ interface NetworkNodesProps {
  */
 const NetworkNodes: React.FC<NetworkNodesProps> = ({ nodes }) => {
   return(
-    <g stroke='#fff' strokeWidth={1.5}>
-      {nodes.map(node => (
-        <circle
-          key={node.id}
-          cx={node.x}
-          cy={node.y}
-          r={12}
-          fill='#0085FF'
-        />
+    <g strokeWidth={1.5}>
+      {nodes.map((node, index) => (
+        <NetworkNode key={`${index}-node`} node={node} />
+      ))}
+      {nodes.map((node, index) => (
+        <NodeLabel key={`${index}-label`} node={node} />
       ))}
     </g>
+  )
+}
+
+/**
+ * Renders the label for a node in the network diagram
+ * @prop `node` - node data - contains label and position
+ * @returns 
+ */
+const NodeLabel: React.FC<{ node: GraphNode }> = ({ node }) => {
+  return (
+    <text
+      x={node.x}
+      y={node.y}
+      dy={-20}
+      fontSize={18}
+      fill='hsl(0, 0%, 10%)'
+      textAnchor='middle'
+      alignmentBaseline='middle'
+    >
+      {node.label}
+    </text> 
+  )
+}
+
+interface NetworkNodeProps {
+  node: GraphNode
+}
+
+const NetworkNode: React.FC<NetworkNodeProps> = ({ node }) => {
+  return (
+    <circle
+      key={node.id}
+      cx={node.x}
+      cy={node.y}
+      r={5}
+      fill='#0085FF'
+    />
   )
 }
 
@@ -65,24 +97,32 @@ interface NetworkLinksProps {
  * @prop `links` - array of links between nodes
 */
 const NetworkLinks: React.FC<NetworkLinksProps> = ({ links }) => {
+  return (
+    <g stroke='#999' strokeWidth={1.5}>
+      {links.map((link, index) => (
+        <NetworkLink key={index} link={link} />
+      ))}
+    </g>  
+  )
+}
+
+/**
+ * Renders a single link between two nodes in the network diagram
+ * @prop `link` - link data - specifies source and target nodes
+ */
+const NetworkLink: React.FC<{ link: GraphLink }> = ({ link }) => {
   const isGraphNode = (node: number | GraphNode): node is GraphNode => {
     return typeof node !== 'number'
   }
-
+  if (!isGraphNode(link.source) || !isGraphNode(link.target)) return <></>
 
   return (
-    <g stroke='#999' strokeWidth={1.5}>
-      {links.map(link => (
-        isGraphNode(link.source) && isGraphNode(link.target) ? (
-          <line
-            x1={link.source.x}
-            y1={link.source.y}
-            x2={link.target.x}
-            y2={link.target.y}
-          />
-        ) : null
-      ))}
-    </g>  
+    <line
+      x1={link.source.x}
+      y1={link.source.y}
+      x2={link.target.x}
+      y2={link.target.y}
+    />
   )
 }
 
