@@ -19,8 +19,8 @@ interface NetworkDiagramProps {
  * @prop `data` - graph data to be rendered - contains nodes and links
  */
 const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ width, height, data }) => {
-  const { nodes, links, simulation, updateNodePosition } = useDrawNetwork({ width, height, data })
-  const { transform, transformedElementParentRef } = usePanAndZoom<SVGSVGElement>()  
+  const { nodes, links, simulation, updateNodePosition, simulationInitialized } = useDrawNetwork({ width, height, data })
+  const { transform, transformedElementParentRef } = usePanAndZoom<SVGSVGElement>()
   
   return (
     <svg
@@ -32,7 +32,12 @@ const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ width, height, data }) 
     >
       <g transform={transform}>
         <NetworkLinks links={links} />
-        <NetworkNodes nodes={nodes} simulation={simulation} updateNodePosition={updateNodePosition} />
+        <NetworkNodes
+          nodes={nodes}
+          simulation={simulation}
+          updateNodePosition={updateNodePosition}
+          simulationInitialized={simulationInitialized}
+        />
       </g>
     </svg>
   )
@@ -42,6 +47,7 @@ interface NetworkNodesProps {
   nodes: GraphNode[]
   simulation: D3Simulation
   updateNodePosition: UpdateNodePosition
+  simulationInitialized: boolean
 }
 
 /**
@@ -49,12 +55,19 @@ interface NetworkNodesProps {
  * @prop `nodes` - array of nodes to be rendered
  * @prop `simulation` - d3 force simulation object
  * @prop `updateNodePosition` - function to update the position of a node
+ * @prop `simulationInitialized` - flag to indicate if the simulation has been initialized
  */
-const NetworkNodes: React.FC<NetworkNodesProps> = ({ nodes, simulation, updateNodePosition }) => {
+const NetworkNodes: React.FC<NetworkNodesProps> = ({ nodes, simulation, updateNodePosition, simulationInitialized }) => {
   return(
     <g strokeWidth={1.5}>
       {nodes.map((node, index) => (
-        <NetworkNode key={`${index}-node`} node={node} simulation={simulation} updateNodePosition={(x: number | null, y: number | null) => updateNodePosition(index, x, y)} />
+        <NetworkNode
+          key={`${index}-node`}
+          node={node}
+          simulation={simulation}
+          updateNodePosition={(x: number | null, y: number | null) => updateNodePosition(index, x, y)}
+          simulationInitialized={simulationInitialized}
+        />
       ))}
       {nodes.map((node, index) => (
         <NodeLabel key={`${index}-label`} node={node} />
@@ -87,6 +100,7 @@ interface NetworkNodeProps {
   node: GraphNode
   simulation: D3Simulation
   updateNodePosition: (x: number | null, y: number | null) => void
+  simulationInitialized: boolean
 }
 
 /**
@@ -94,9 +108,10 @@ interface NetworkNodeProps {
  * @prop `node` - node data
  * @prop `simulation` - d3 force simulation object
  * @prop `updateNodePosition` - function to update the position of a node
+ * @prop `simulationInitialized` - flag to indicate if the simulation has been initialized
  */
-const NetworkNode: React.FC<NetworkNodeProps> = ({ node, simulation, updateNodePosition }) => {
-  const ref = useDrag<SVGCircleElement>(simulation, updateNodePosition)
+const NetworkNode: React.FC<NetworkNodeProps> = ({ node, simulation, updateNodePosition, simulationInitialized }) => {
+  const ref = useDrag<SVGCircleElement>(simulation, simulationInitialized, updateNodePosition)
   return (
     <circle
       ref={ref}

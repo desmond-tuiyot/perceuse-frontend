@@ -17,6 +17,7 @@ interface DrawNetworkHook {
   nodes: GraphNode[]
   links: GraphLink[]
   updateNodePosition: UpdateNodePosition
+  simulationInitialized: boolean
 }
 
 /**
@@ -32,7 +33,7 @@ const useDrawNetwork = ({ data, width, height }: DrawNetworkParams): DrawNetwork
   const [links, setLinks] = useState<GraphLink[]>(dataRef.current.links)
 
   const simulation = useRef<D3Simulation>(undefined as unknown as D3Simulation)
-  
+  const [simulationInitialized, setSimulationInitialized] = useState(false)
   useEffect(() => {
     simulation.current = d3.forceSimulation<GraphNode, GraphLink>(dataRef.current.nodes)
       .force('link', d3.forceLink<GraphNode, GraphLink>(dataRef.current.links).id((d) => d.id))
@@ -43,6 +44,8 @@ const useDrawNetwork = ({ data, width, height }: DrawNetworkParams): DrawNetwork
         setNodes([...dataRef.current.nodes])
         setLinks([...dataRef.current.links])
       })
+
+    setSimulationInitialized(true)
   }, [])
 
   const updateNodePosition = (index: number, x: number | null, y: number | null): void => {
@@ -54,7 +57,8 @@ const useDrawNetwork = ({ data, width, height }: DrawNetworkParams): DrawNetwork
     simulation: simulation.current,
     nodes,
     links,
-    updateNodePosition
+    updateNodePosition,
+    simulationInitialized
   }
 }
 
