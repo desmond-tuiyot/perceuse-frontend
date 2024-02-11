@@ -9,13 +9,15 @@ import getGraphData from '../entities/get-graph-data'
  * Component to display the graph view
  */
 const GraphView: React.FC = () => {
-  const transitions = useGetTransitions()?.data?.transitions || []
-  const danceMoves = useGetDanceMoves()?.data?.danceMoves || []
+  const transitionsHook = useGetTransitions()
+  const danceMovesHook = useGetDanceMoves()
 
-  if (!transitions.length || !danceMoves.length) return <p>Loading...</p>
-  if (transitions.length === 0) return <p>No transitions found</p>
+  if (transitionsHook.loading || danceMovesHook.loading) return <p>Loading...</p>
+  
+  const danceMoves = danceMovesHook.data?.danceMoves || []
   if (danceMoves.length === 0) return <p>No dance moves found</p>
-
+  
+  const transitions = transitionsHook.data?.transitions || []
   const graphData = getGraphData(danceMoves, transitions)
   return (
     <NetworkDiagram width={1000} height={1000} data={graphData} />
