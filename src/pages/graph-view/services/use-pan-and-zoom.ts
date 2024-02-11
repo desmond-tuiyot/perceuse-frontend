@@ -19,10 +19,10 @@ function usePanAndZoom<TransformedParentElement extends Element> (): ZoomHook<Tr
   const zoomRef = useRef(undefined as unknown as D3ZoomBehavior<TransformedParentElement>)
   useEffect(() => {
     zoomRef.current = d3.zoom<TransformedParentElement, unknown>()
-    .on('zoom', (event) => {
-      const { transform } = event
-      setTransform(transform.toString())
-    })
+      .on('zoom', (event) => {
+        const { transform } = event
+        setTransform(transform.toString())
+      })
   }, [])
   
   const ref = useRef<TransformedParentElement>(undefined as unknown as TransformedParentElement)
