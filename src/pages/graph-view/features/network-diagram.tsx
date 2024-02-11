@@ -1,9 +1,10 @@
 import React from 'react'
 
-import useDrawNetwork from '../services/use-draw-network'
+import useDrawNetwork, { UpdateNodePosition } from '../services/use-draw-network'
 import usePanAndZoom from '../services/use-pan-and-zoom'
 import { GraphData } from '../entities/get-graph-data'
-import { GraphLink, GraphNode } from '../entities'
+import { D3Simulation, GraphLink, GraphNode } from '../entities'
+import useDrag from '../services/use-drag'
 
 interface NetworkDiagramProps {
   width: number
@@ -18,7 +19,7 @@ interface NetworkDiagramProps {
  * @prop `data` - graph data to be rendered - contains nodes and links
  */
 const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ width, height, data }) => {
-  const { nodes, links } = useDrawNetwork({ width, height, data })
+  const { nodes, links, simulation, updateNodePosition } = useDrawNetwork({ width, height, data })
   const { transform, transformedElementParentRef } = usePanAndZoom<SVGSVGElement>()  
   
   return (
@@ -31,7 +32,7 @@ const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ width, height, data }) 
     >
       <g transform={transform}>
         <NetworkLinks links={links} />
-        <NetworkNodes nodes={nodes} />
+        <NetworkNodes nodes={nodes} simulation={simulation} updateNodePosition={updateNodePosition} />
       </g>
     </svg>
   )
@@ -39,17 +40,21 @@ const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ width, height, data }) 
 
 interface NetworkNodesProps {
   nodes: GraphNode[]
+  simulation: D3Simulation
+  updateNodePosition: UpdateNodePosition
 }
 
 /**
  * Renders the nodes in the network diagram
  * @prop `nodes` - array of nodes to be rendered
+ * @prop `simulation` - d3 force simulation object
+ * @prop `updateNodePosition` - function to update the position of a node
  */
-const NetworkNodes: React.FC<NetworkNodesProps> = ({ nodes }) => {
+const NetworkNodes: React.FC<NetworkNodesProps> = ({ nodes, simulation, updateNodePosition }) => {
   return(
     <g strokeWidth={1.5}>
       {nodes.map((node, index) => (
-        <NetworkNode key={`${index}-node`} node={node} />
+        <NetworkNode key={`${index}-node`} node={node} simulation={simulation} updateNodePosition={(x: number | null, y: number | null) => updateNodePosition(index, x, y)} />
       ))}
       {nodes.map((node, index) => (
         <NodeLabel key={`${index}-label`} node={node} />
@@ -80,15 +85,21 @@ const NodeLabel: React.FC<{ node: GraphNode }> = ({ node }) => {
 
 interface NetworkNodeProps {
   node: GraphNode
+  simulation: D3Simulation
+  updateNodePosition: (x: number | null, y: number | null) => void
 }
 
 /**
  * Renders a single node in the network diagram
  * @prop `node` - node data
+ * @prop `simulation` - d3 force simulation object
+ * @prop `updateNodePosition` - function to update the position of a node
  */
-const NetworkNode: React.FC<NetworkNodeProps> = ({ node }) => {
+const NetworkNode: React.FC<NetworkNodeProps> = ({ node, simulation, updateNodePosition }) => {
+  const ref = useDrag<SVGCircleElement>(simulation, updateNodePosition)
   return (
     <circle
+      ref={ref}
       key={node.id}
       cx={node.x}
       cy={node.y}

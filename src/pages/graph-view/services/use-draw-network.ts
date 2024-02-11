@@ -10,10 +10,13 @@ interface DrawNetworkParams {
   height: number
 }
 
+export type UpdateNodePosition = (index: number, x: number | null, y: number | null) => void
+
 interface DrawNetworkHook {
   simulation: D3Simulation
   nodes: GraphNode[]
   links: GraphLink[]
+  updateNodePosition: UpdateNodePosition
 }
 
 /**
@@ -23,30 +26,35 @@ interface DrawNetworkHook {
  * @param `height` - height of the canvas element
  */
 const useDrawNetwork = ({ data, width, height }: DrawNetworkParams): DrawNetworkHook => {
-  const linksCopy: GraphLink[] = data.links.map((d) => ({ ...d }))
-  const nodesCopy: GraphNode[] = data.nodes.map((d) => ({ ...d }))
+  const dataRef = useRef(data)
 
-  const [nodes, setNodes] = useState<GraphNode[]>(nodesCopy)
-  const [links, setLinks] = useState<GraphLink[]>(linksCopy)
+  const [nodes, setNodes] = useState<GraphNode[]>(dataRef.current.nodes)
+  const [links, setLinks] = useState<GraphLink[]>(dataRef.current.links)
 
   const simulation = useRef<D3Simulation>(undefined as unknown as D3Simulation)
   
   useEffect(() => {
-    simulation.current = d3.forceSimulation<GraphNode, GraphLink>(nodesCopy)
-      .force('link', d3.forceLink<GraphNode, GraphLink>(linksCopy).id((d) => d.id))
+    simulation.current = d3.forceSimulation<GraphNode, GraphLink>(dataRef.current.nodes)
+      .force('link', d3.forceLink<GraphNode, GraphLink>(dataRef.current.links).id((d) => d.id))
       .force('collide', d3.forceCollide(50))
       .force('charge', d3.forceManyBody())
       .force('center', d3.forceCenter(width / 2, height / 2))
       .on('tick', () => {
-        setNodes([...nodesCopy])
-        setLinks([...linksCopy])
+        setNodes([...dataRef.current.nodes])
+        setLinks([...dataRef.current.links])
       })
   }, [])
+
+  const updateNodePosition = (index: number, x: number | null, y: number | null): void => {
+    dataRef.current.nodes[index].fx = x
+    dataRef.current.nodes[index].fy = y
+  }
 
   return {
     simulation: simulation.current,
     nodes,
-    links
+    links,
+    updateNodePosition
   }
 }
 
