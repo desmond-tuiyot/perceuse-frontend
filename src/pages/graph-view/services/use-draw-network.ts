@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
 
-import { GraphData, GraphLink, GraphNode } from '../entities/get-graph-data'
+import { GraphData } from '../entities/get-graph-data'
+import { D3Simulation, GraphLink, GraphNode } from '../entities'
 
 interface DrawNetworkParams {
   data: GraphData
@@ -10,7 +11,7 @@ interface DrawNetworkParams {
 }
 
 interface DrawNetworkHook {
-  simulation: d3.Simulation<GraphNode, GraphLink>
+  simulation: D3Simulation
   nodes: GraphNode[]
   links: GraphLink[]
 }
@@ -28,7 +29,7 @@ const useDrawNetwork = ({ data, width, height }: DrawNetworkParams): DrawNetwork
   const [nodes, setNodes] = useState<GraphNode[]>(nodesCopy)
   const [links, setLinks] = useState<GraphLink[]>(linksCopy)
 
-  const simulation = useRef<d3.Simulation<GraphNode, GraphLink>>(undefined as unknown as d3.Simulation<GraphNode, GraphLink>)
+  const simulation = useRef<D3Simulation>(undefined as unknown as D3Simulation)
   
   useEffect(() => {
     simulation.current = d3.forceSimulation<GraphNode, GraphLink>(nodesCopy)
