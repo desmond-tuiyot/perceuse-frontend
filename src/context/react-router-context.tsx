@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
 import App from '../App'
 import DanceMove from '../pages/dance-move'
+import Transitions from '../pages/transitions'
 
 const router = createBrowserRouter([
   {
@@ -10,12 +12,16 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <DanceMove />
+      },
+      {
+        path: '/dance-moves',
+        element: <DanceMove />
+      },
+      {
+        path: '/transitions',
+        element: <Transitions />
       }
     ]
-  },
-  {
-    path: '/dance-move',
-    element: <DanceMove />
   }
 ])
 
