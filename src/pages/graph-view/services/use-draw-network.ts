@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as d3 from 'd3'
 
 import { GraphData, GraphLink, GraphNode } from '../entities/get-graph-data'
@@ -10,6 +10,7 @@ interface DrawNetworkParams {
 }
 
 interface DrawNetworkHook {
+  simulation: d3.Simulation<GraphNode, GraphLink>
   nodes: GraphNode[]
   links: GraphLink[]
 }
@@ -21,28 +22,30 @@ interface DrawNetworkHook {
  * @param `height` - height of the canvas element
  */
 const useDrawNetwork = ({ data, width, height }: DrawNetworkParams): DrawNetworkHook => {
-  const links: GraphLink[] = data.links.map((d) => ({ ...d }))
-  const nodes: GraphNode[] = data.nodes.map((d) => ({ ...d }))
+  const linksCopy: GraphLink[] = data.links.map((d) => ({ ...d }))
+  const nodesCopy: GraphNode[] = data.nodes.map((d) => ({ ...d }))
 
-  const [nodePositions, setNodePositions] = useState<GraphNode[]>([])
-  const [linkPositions, setLinkPositions] = useState<GraphLink[]>([])
+  const [nodes, setNodes] = useState<GraphNode[]>(nodesCopy)
+  const [links, setLinks] = useState<GraphLink[]>(linksCopy)
 
+  const simulation = useRef<d3.Simulation<GraphNode, GraphLink>>(undefined as unknown as d3.Simulation<GraphNode, GraphLink>)
+  
   useEffect(() => {
-    d3.forceSimulation(nodes)
-      .force('link', d3.forceLink<GraphNode, GraphLink>(links).id((d) => d.id))
-      .force('collide', d3.forceCollide().radius(120))
+    simulation.current = d3.forceSimulation<GraphNode, GraphLink>(nodesCopy)
+      .force('link', d3.forceLink<GraphNode, GraphLink>(linksCopy).id((d) => d.id))
+      .force('collide', d3.forceCollide(50))
       .force('charge', d3.forceManyBody())
       .force('center', d3.forceCenter(width / 2, height / 2))
       .on('tick', () => {
-        setNodePositions([...nodes])
-        setLinkPositions([...links])
+        setNodes([...nodesCopy])
+        setLinks([...linksCopy])
       })
-
-  }, [width, height, nodes, links])
+  }, [])
 
   return {
-    nodes: nodePositions,
-    links: linkPositions
+    simulation: simulation.current,
+    nodes,
+    links
   }
 }
 
