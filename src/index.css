@@ -1,0 +1,6 @@
+body {
+  margin    : 0;
+  overflow-y: auto;
+  overflow  : overlay;
+  overflow-x: hidden;
+}

@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client'
+import { QueryResult, gql, useQuery } from '@apollo/client'
 import { DanceMove } from '../entities'
 
 interface DanceMoveQueryResult {
@@ -9,14 +9,8 @@ interface DanceMoveQueryResult {
  * A custom hook that fetches all dance moves
  * @returns an object with data, loading, and error properties
  */
-const useGetDanceMoves = () => {
-  const { data, loading, error, refetch } = useQuery<DanceMoveQueryResult>(GET_DANCE_MOVES)
-  return {
-    data,
-    loading,
-    error,
-    refetch
-  }
+const useGetDanceMoves = (): QueryResult<DanceMoveQueryResult> => {
+  return useQuery<DanceMoveQueryResult>(GET_DANCE_MOVES)
 }
 
 const GET_DANCE_MOVES = gql`

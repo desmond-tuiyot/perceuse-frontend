@@ -1,0 +1,13 @@
+.header {
+  composes: header from '../../dance-move/features/show-dance-moves.module.css';
+}
+
+.danceMoveName {
+  composes: danceMoveName from '../../dance-move/features/show-dance-moves.module.css';
+}
+
+.listContent {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
