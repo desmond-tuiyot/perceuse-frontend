@@ -1,0 +1,30 @@
+.sequenceContainer {
+  display: flex;
+  justify-content: center;
+  column-gap: 18px;
+  align-items: center;
+}
+
+.currentMove {
+  font-size: 1.5rem;
+  width: 200px;
+}
+
+.secondaryMove {
+  margin-top: 2px;
+  font-size: 1rem;
+  color: hsl(0, 0%, 50%);
+}
+
+.nextMove {
+  margin-top: 2px;
+  font-size: 1rem;
+  color: hsl(0, 0%, 30%);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  column-gap: 18px;
+  margin-top: 24px;
+}

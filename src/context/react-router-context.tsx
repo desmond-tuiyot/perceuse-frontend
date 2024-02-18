@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from '../App'
 import DanceMove from '../pages/dance-move'
 import Transitions from '../pages/transitions'
+import TransitionTrainer from '../pages/transition-trainer/transition-trainer'
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         element: <Transitions />
       }
     ]
+  },
+  {
+    path: '/transition-trainer',
+    element: <TransitionTrainer />
   }
 ])
 
